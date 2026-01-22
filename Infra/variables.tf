@@ -50,7 +50,7 @@ variable "identity_prefix" {
 variable "ssh_public_key" {
   description = "Path to SSH public key for AKS nodes"
   type        = string
-  default = "~/.ssh/id_rsa.pub"
+  default     = "~/.ssh/id_rsa.pub"
 }
 #################### Logs Variables ####################
 variable "env_name" {

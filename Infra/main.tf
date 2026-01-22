@@ -28,13 +28,13 @@ resource "azurerm_resource_group" "resourcegroup" {
 module "keyvault" {
   source = "./modules/keyvault"
 
-  resourcegroup        = azurerm_resource_group.resourcegroup.name
-  location             = var.location
-  kv_name              = var.kv_name
-  tenant_id            = data.azurerm_client_config.current.tenant_id
-  object_id            = data.azurerm_client_config.current.object_id
-  tags                 = local.tags
-  identity_prefix       = var.identity_prefix
+  resourcegroup   = azurerm_resource_group.resourcegroup.name
+  location        = var.location
+  kv_name         = var.kv_name
+  tenant_id       = data.azurerm_client_config.current.tenant_id
+  object_id       = data.azurerm_client_config.current.object_id
+  tags            = local.tags
+  identity_prefix = var.identity_prefix
 }
 
 # Monitoring must be created BEFORE AKS (AKS needs Log Analytics ID)
@@ -61,7 +61,7 @@ module "aks" {
   key_vault_id      = module.keyvault.key_vault_id
   ssh_public_key    = var.ssh_public_key
   #aks_subnet_id     = module.vnet.aks_subnet_id
-  depends_on        = [module.monitoring]
+  depends_on = [module.monitoring]
 }
 
 # AKS Diagnostic Settings - Created AFTER AKS exists (breaks circular dependency)
