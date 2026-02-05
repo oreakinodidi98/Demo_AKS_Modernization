@@ -45,7 +45,16 @@ az group delete -y \
       - **Solution Server**: MCP server in openshift enviroment. Persistent memory of all the resolutions that have been done, allowing you to enforce patterns and practices for future use
         - Leans from migration to enhance users experice. Has visibility to existing rules, solved incidents and manual overids. Migration metrics; Recordds how incidents are solved; Mine insights of solutions; contexts hinting for better generation
       - Can scale to 200x applications
-  - **Developer Hub**: 
+  - **Developer Hub**: Use a chat interface within Red Hat Developer Hub for help with non-coding tasks, supported by information from Red Hat’s Developer Hub knowledge base.
+  - Essentially GHCP chat mode
+  - Use cases: generate first drafts of technical documentation, ask how to do a specific task, explore application design approaches, and more.
+    - Can use to plan and create unit tests
+    - Extension in VS code
+    - Can be hosted in pod in openshift instead of Local
+    - Connects to CI/CD
+    - Can change models
+    - [Demo](https://www.youtube.com/watch?v=HPPOW1nOexM&t=1s)
+    - [Document](https://developers.redhat.com/products/rhdh/developer-lightspeed?extIdCarryOver=true&intcmp=7013a0000038AoiAAE&sc_cid=7013a000003SxHRAA0)
 - **Benifits**:
   - **Workflow** integration: Reduce context-switching. Can access help without leaving your primary workspace.
   - **Context**: Uses Workspace context to answer questions
@@ -54,3 +63,7 @@ az group delete -y \
   - **MTA**: Unlike traditional coding assistants, Lightspeed for migration toolkit for applications is guided by MTA’s static code analysis and past migrations to suggest accurate code solutions from the start and also improve them over time. This helps developers refactor applications faster and predictably.
   - Optionally, you can also turn on “agent mode” to have built-in AI agents analyze your application to search and fix new issues that may arise after changing your code. This helps preserve functionality.
   - Can configure GenAI model used for this process. Can create Modernization targets
+  - **Developer hub**: Boost productivity with an AI assistant that helps with daily non-coding tasks
+  - AI virtual assistant for speeding up non-coding developer tasks. Through a chat-like interface, directly from the Developer Hub console, it helps with exploring software design approaches, drafting documentation and deployment artifacts, troubleshooting issues, and more.
+  - Create planning for solutions
+  - Need a subscribtion
