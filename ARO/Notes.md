@@ -42,10 +42,14 @@ az group delete -y \
       - **Application Analysis**: Can Add custom rules -> Run Analysis with a specific target profile, find potential issues
       - **Modernize with GenAI**: Goes through Analysis and producess solutions from the analysis so does Migrations/Modernization changes if neccessary.
       - **Agentic AI**: AI agents will gfix things that affect what has been resolved by GenAI in previous step. So fix related issues to the first solution
-      - Solution Server: MCP server in openshift enviroment. Persistent memory of all the resolutions that have been done, allowing you to enforce patterns and practices for future use
+      - **Solution Server**: MCP server in openshift enviroment. Persistent memory of all the resolutions that have been done, allowing you to enforce patterns and practices for future use
+      - Can scale to 200x applications
   - **Developer Hub**: 
 - **Benifits**:
   - **Workflow** integration: Reduce context-switching. Can access help without leaving your primary workspace.
   - **Context**: Uses Workspace context to answer questions
   - **Privacy**: Can bring your preferred large language model (LLM) and retain control over AI model performance, cost, and data privacy.
-- **Why**:
+- **Why/USP**:
+  - **MTA**: Unlike traditional coding assistants, Lightspeed for migration toolkit for applications is guided by MTA’s static code analysis and past migrations to suggest accurate code solutions from the start and also improve them over time. This helps developers refactor applications faster and predictably.
+  - Optionally, you can also turn on “agent mode” to have built-in AI agents analyze your application to search and fix new issues that may arise after changing your code. This helps preserve functionality.
+  - Can configure GenAI model used for this process. Can create Modernization targets
