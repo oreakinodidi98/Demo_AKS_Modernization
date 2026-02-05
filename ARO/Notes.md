@@ -43,6 +43,7 @@ az group delete -y \
       - **Modernize with GenAI**: Goes through Analysis and producess solutions from the analysis so does Migrations/Modernization changes if neccessary.
       - **Agentic AI**: AI agents will gfix things that affect what has been resolved by GenAI in previous step. So fix related issues to the first solution
       - **Solution Server**: MCP server in openshift enviroment. Persistent memory of all the resolutions that have been done, allowing you to enforce patterns and practices for future use
+        - Leans from migration to enhance users experice. Has visibility to existing rules, solved incidents and manual overids. Migration metrics; Recordds how incidents are solved; Mine insights of solutions; contexts hinting for better generation
       - Can scale to 200x applications
   - **Developer Hub**: 
 - **Benifits**:
