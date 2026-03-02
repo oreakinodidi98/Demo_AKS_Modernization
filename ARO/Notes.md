@@ -66,4 +66,4 @@ az group delete -y \
   - **Developer hub**: Boost productivity with an AI assistant that helps with daily non-coding tasks
   - AI virtual assistant for speeding up non-coding developer tasks. Through a chat-like interface, directly from the Developer Hub console, it helps with exploring software design approaches, drafting documentation and deployment artifacts, troubleshooting issues, and more.
   - Create planning for solutions
-  - Need a subscribtion
+  - Need a subscribtion test
