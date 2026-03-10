@@ -71,6 +71,12 @@ Access the app at: **http://localhost:8080**
 
 - Once running try features like find owners, View owner details , Edit pet information or review Veterinarians
 
+### App Mod
+
+- Will use GitHub Copilot app modernization to assess, remediate, and modernize the Spring Boot application in preparation to migrate the workload to AKS
+
+1. Select GitHub Copilot app modernization extension
+
 ---
 
 ## Troubleshooting
