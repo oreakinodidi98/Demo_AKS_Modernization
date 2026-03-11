@@ -76,6 +76,35 @@ Access the app at: **http://localhost:8080**
 - Will use GitHub Copilot app modernization to assess, remediate, and modernize the Spring Boot application in preparation to migrate the workload to AKS
 
 1. Select GitHub Copilot app modernization extension
+2. Run Assesment
+3. can follow the progress of the assesment by looking at the output Terminal in VS Code.
+4. Assessment results are consumed by GitHub Copilot App Modernization . 
+   1. This examines the scan findings and produces targeted modernization recommendations to prepare the application for containerization and migration to Azure.
+      1. **target**: the desired runtime or Azure compute service you plan to move the app to.
+         1. **azure-aks**: Best practices for deploying an app to Azure Kubernetes Service.
+         2. **azure-appservice**: Best practices for deploying an app to Azure App Service.
+         3. **azure-container-apps**: Best practices for deploying an app to Azure Container Apps.
+      2. **capability**: what technology to modernize the apps towards.
+         1. **containerization**: Best practices for containerizing applications.
+      3. **mode**: Choose how deep AppCAT should inspect the project.
+         1. **issue-only**: Analyze source code to only detect issues
+         2. **source-only**: Fast analysis that examines source code only.
+         3. **full**: Full analysis -> inspects source code and scans dependencies (slower, more thorough).
+      4. **os**: best practices tailored for specific operating systems that AppCAT should use when migrating applications (windows or Linux). 
+5. You Ean edit the file at ```.github/appmod-java/appcat/assessment-config.yaml``` to change targets and modes.
+6. Review Results:
+   1. The assessment analyzed the Spring Boot Petclinic application for cloud migration readiness and identified the following: **X** cloud readiness issues requiring attention
+   2. **Resolution Approach**: More than **30%** of the identified issues can be automatically resolved through code and configuration updates using GitHub Copilot's built-in app modernization capabilities.
+   3. **Issue Prioritization**: Issues are categorized by urgency level to guide remediation efforts:
+      1. **Mandatory** (Purple) - Critical issues that must be addressed before migration.
+      2. **Potential** (Blue) - Performance and optimization opportunities.
+      3. **Optional** (Gray) - Nice-to-have improvements that can be addressed later.
+      4. prioritization framework ensures teams focus on blocking issues first while identifying opportunities for optimization and future enhancements.
+7. Review task and take action on finding
+   1. Migrate to azure DB for postgressSQLModernization change: This will update the Java code to work with PostgreSQL Flexible Server using Entra ID authentication
+   2. Tool will execute the appmod-run-task command for mi-postgresql-spring, which will examine the workspace structure and initiate the migration task 
+   3. Generates a comprehensive migration plan
+   4. The plan outlines the specific changes needed to implement Azure Managed Identity authentication for PostgreSQL connectivity
 
 ---
 
