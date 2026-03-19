@@ -402,3 +402,4 @@ terraform.rc
 **/k8s-Copy/*
 *.ps1
 /AKS_APPMod/.envrc
+/AKS_CLI/.envrc
