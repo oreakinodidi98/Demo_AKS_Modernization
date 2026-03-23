@@ -1,0 +1,11 @@
+{
+  "azure-aws-config-credential-01000": "bare/aws-credentials-to-azure",
+  "azure-aws-config-region-02000": "bare/aws-region-configuration-to-azure",
+  "azure-password-01000": "plaintext-credential-to-azure-keyvault",
+  "azure-database-mysql-01000": "mi-mysql-spring",
+  "azure-database-postgresql-02000": "mi-postgresql-spring",
+  "hardcoded-urls-00001": "bare/remote-communication/hardcoded-urls",
+  "unsecure-network-protocol-00000": "bare/remote-communication/secure-protocols",
+  "localhost-http-00001": "bare/local-resource-access",
+  "localhost-jdbc-00002": "bare/local-resource-access"
+}
