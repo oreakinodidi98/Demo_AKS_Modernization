@@ -47,6 +47,10 @@ __pycache__
 
 # Windows
 Thumbs.db
+
+# VBD deck (internal only)
+Agentic_AKS_Operations/VBD_Agentic_AKS_Operations.md
+
 # Local .terraform directories
 **/.terraform/*
 

@@ -22,8 +22,9 @@
 3. `kubectl` configured and connected to the cluster
 4. Service account with [RBAC permissions](https://learn.microsoft.com/en-us/azure/aks/agentic-cli-for-aks-service-account-workload-identity-setup#step-1-create-the-kubernetes-service-account-mandatory)
 5. Write access to the target Kubernetes namespace for deployment
-6. *(Optional but recommended)* Workload identity setup for enhanced security
-7. **Enable local auth on Cognitive Services** (required if your subscription enforces Entra ID-only):
+6. Set up your LLM API key
+7. *(Optional but recommended)* Workload identity setup for enhanced security
+8. **Enable local auth on Cognitive Services** (required if your subscription enforces Entra ID-only):
 
    ```powershell
    Get-AzCognitiveServicesAccount `
