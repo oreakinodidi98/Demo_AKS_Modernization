@@ -405,5 +405,8 @@ terraform.rc
 **/.infracost/*
 **/k8s-Copy/*
 *.ps1
+!AKS_App_Routing/download-demo.ps1
 /AKS_APPMod/.envrc
 /AKS_CLI/.envrc
+!AKS_App_Routing/cleanup.ps1
+!AKS_App_Routing/setup.ps1
