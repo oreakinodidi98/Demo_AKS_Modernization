@@ -4,6 +4,30 @@
 
 ---
 
+## Prerequisites
+
+Before running any of the deployments or scripts in this demo, make sure you have the following:
+
+| Requirement | Details |
+|---|---|
+| **Azure CLI** | `az` installed and authenticated (`az login`) |
+| **kubectl** | Configured to talk to your AKS cluster (`az aks get-credentials`) |
+| **AKS Cluster** | A running AKS cluster — GPU node pool required for Stages 3–5 |
+| **Python 3.10+** | Required to run `CallApi.py` |
+| **pip packages** | `requests` (required), `openai` (optional — for OpenAI-compatible endpoint) |
+| **Kubernetes namespace** | Create the target namespace before deploying: `kubectl create namespace ollama` |
+| **Helm** *(optional)* | Only if deploying ArgoCD from scratch |
+
+Install the Python dependencies:
+
+```bash
+pip install requests
+# Optional: for OpenAI-compatible endpoint
+pip install openai
+```
+
+---
+
 ## Why Ollama
 
 Ollama turns running a large language model into something as simple as pulling a container image. It handles model downloads, quantization, and serving behind a clean REST API — no ML platform expertise required.
@@ -127,6 +151,8 @@ Moves inference onto **GPU nodes**. Requests an NVIDIA GPU per pod and targets A
 - Tolerations let the pod schedule on GPU-tainted nodes
 - 16Gi memory request / 32Gi limit to handle model loading
 
+Need to add a GPU node first:
+az aks nodepool add --resource-group <rg> --cluster-name <cluster> --name gpupool --node-count 1 --node-vm-size Standard_NC4as_T4_v3 --node-taints nvidia.com/gpu=present:NoSchedule --labels nvidia.com/gpu.product=NVIDIA-T4
 ---
 
 ### Stage 4: Model Preloading (Inline) — `PreloadDeploy.yaml`
@@ -184,6 +210,62 @@ Python examples showing three ways to talk to Ollama:
 1. **`/api/generate`** — simple prompt-in, response-out
 2. **`/api/chat`** — chat completion with a custom model
 3. **OpenAI-compatible endpoint** — use the OpenAI Python SDK with Ollama as the backend (commented example)
+
+#### Running Inference Locally
+
+To run `CallApi.py` against Ollama deployed on your AKS cluster, you need to set up a **port-forward** first — this tunnels the cluster service to your local machine.
+
+**Step 1 — Port-forward the Ollama service:**
+
+```bash
+kubectl port-forward svc/dev-ollama 11434:11434 -n ollama
+```
+
+> If you already have a **local Ollama instance** running on `127.0.0.1:11434`, the port-forward will bind to IPv6 (`[::1]:11434`) instead. The script handles this automatically.
+
+**Step 2 — Pull a model** (if one isn't loaded yet):
+
+```bash
+kubectl exec -it deploy/dev-ollama -n ollama -- ollama pull tinyllama
+```
+
+**Step 3 — Run the script:**
+
+```bash
+python CallApi.py
+```
+
+The script defaults to `http://[::1]:11434` — targeting the AKS Ollama via IPv6 port-forward. Override this with the `OLLAMA_URL` environment variable if your setup differs:
+
+```bash
+# Target a different endpoint
+OLLAMA_URL=http://localhost:11434 python CallApi.py
+
+# Target the GPU production deployment
+kubectl port-forward svc/gpu-ollama 11434:11434 -n ollama
+python CallApi.py
+```
+
+#### Using the OpenAI-Compatible Endpoint
+
+Ollama exposes an **OpenAI-compatible API** at `/v1/chat/completions`. This lets you swap Ollama in wherever you'd use the OpenAI SDK — no code changes beyond the `base_url`:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://[::1]:11434/v1",  # Ollama via port-forward
+    api_key="not-needed",
+)
+
+response = client.chat.completions.create(
+    model="tinyllama",
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+print(response.choices[0].message.content)
+```
+
+> **Note:** You need `pip install openai` for this. The `api_key` is required by the SDK but ignored by Ollama — any non-empty string works.
 
 ---
 

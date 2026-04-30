@@ -31,18 +31,27 @@ spec:
               value: all
           resources:
             requests:
-              cpu: "4"
-              memory: 16Gi
+              cpu: "2"
+              memory: 12Gi
               nvidia.com/gpu: 1
             limits:
-              cpu: "8"
-              memory: 32Gi
+              cpu: "4"
+              memory: 24Gi
               nvidia.com/gpu: 1
+          # resources:
+          #   requests:
+          #     cpu: "4"
+          #     memory: 16Gi
+          #     nvidia.com/gpu: 1
+          #   limits:
+          #     cpu: "8"
+          #     memory: 32Gi
+          #     nvidia.com/gpu: 1
           volumeMounts:
             - name: gpu-ollama-data
               mountPath: /root/.ollama
       nodeSelector:
-        nvidia.com/gpu.product: NVIDIA-A10G
+        nvidia.com/gpu.product: NVIDIA-T4
       tolerations:
         - key: nvidia.com/gpu
           operator: Exists

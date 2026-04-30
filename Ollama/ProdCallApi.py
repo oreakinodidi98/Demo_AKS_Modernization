@@ -1,13 +1,13 @@
 import os
 import requests
 
-# Use [::1] to reach AKS Ollama via port-forward (IPv6 loopback)
-# Your local Ollama occupies 127.0.0.1:11434 (IPv4), so we target IPv6 explicitly
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://[::1]:11434")
+# Use http://ollama.default.svc:11434 to reach AKS Ollama
+# My local Ollama occupies 127.0.0.1:11434 (IPv4), so we target IPv6 explicitly
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://ollama.default.svc:11434")
 
 # Generate a response
 response = requests.post(f"{OLLAMA_URL}/api/generate", json={
-    "model": "tinyllama",
+    "model": "llama3.1:8b",
     "prompt": "Explain the concept of GitOps in one paragraph",
     "stream": False,
 })
@@ -20,7 +20,7 @@ else:
 
 # Chat completion
 response = requests.post(f"{OLLAMA_URL}/api/chat", json={
-    "model": "tinyllama",
+    "model": "llama3.1:8b",
     "messages": [
         {"role": "user", "content": "Write a Python function to parse JSON safely"}
     ],

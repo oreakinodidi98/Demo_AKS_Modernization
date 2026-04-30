@@ -1,8 +1,8 @@
 import os
 import requests
 
-# Use [::1] to reach AKS Ollama via port-forward (IPv6 loopback)
-# Your local Ollama occupies 127.0.0.1:11434 (IPv4), so we target IPv6 explicitly
+# Using [::1] to reach AKS Ollama via port-forward (IPv6 loopback)
+# My local Ollama occupies 127.0.0.1:11434 (IPv4), so we target IPv6 explicitly
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://[::1]:11434")
 
 # Generate a response
