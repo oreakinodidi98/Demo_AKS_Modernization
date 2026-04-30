@@ -1,0 +1,15 @@
+name: Actions Runner Controller Demo
+on:
+  push:
+    branches:
+      - main
+    pull_request:
+      branches:
+        - main
+
+jobs:
+  Explore-GitHub-Actions:
+    # Must match the INSTALLATION_NAME from runner scale set
+    runs-on: arc-runner-set
+    steps:
+      - run: echo "🎉 This job uses runner scale set runners!"
