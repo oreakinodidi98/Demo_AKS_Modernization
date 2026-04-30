@@ -13,6 +13,9 @@ Before running any of the deployments or scripts in this demo, make sure you hav
 | **Azure CLI** | `az` installed and authenticated (`az login`) |
 | **kubectl** | Configured to talk to your AKS cluster (`az aks get-credentials`) |
 | **AKS Cluster** | A running AKS cluster — GPU node pool required for Stages 3–5 |
+| **Node CPU** | Minimum **2 vCPU** per Ollama pod (4 vCPU recommended) — models run inference on CPU if no GPU is available |
+| **Node Memory** | Minimum **12 GiB allocatable** on the target node — a 7B/8B model needs ~6–7 GiB at runtime, plus OS and kubelet overhead. Set `resources.limits.memory` to at least **12Gi** |
+| **Storage** | **100 GiB PVC** (`managed-csi`) — model weights are large (8B ≈ 4.7 GB on disk). Use `ReadWriteOnce` for single-replica; `ReadWriteMany` (e.g. Azure Files) for multi-replica |
 | **Python 3.10+** | Required to run `CallApi.py` |
 | **pip packages** | `requests` (required), `openai` (optional — for OpenAI-compatible endpoint) |
 | **Kubernetes namespace** | Create the target namespace before deploying: `kubectl create namespace ollama` |
@@ -121,3 +124,144 @@ curl http://localhost:8000/api/generate -d '{
     "stream": false
 }' | jq -r .response
 ```
+
+---
+
+## Troubleshooting
+
+Things break — here's how to find out why.
+
+### Pod Not Starting
+
+Check pod status and events:
+
+```bash
+kubectl get pods -n ollama -o wide
+kubectl describe pod <pod-name> -n ollama
+```
+
+Common failures from `describe`:
+
+| Event | Cause | Fix |
+|---|---|---|
+| `Insufficient memory` | Node doesn't have enough allocatable memory for the pod's `requests.memory` | Lower the request, or use a larger node SKU |
+| `Insufficient cpu` | Same — not enough CPU | Lower the CPU request or scale the node pool |
+| `FailedScheduling` (PVC) | RWO PVC is mounted on another node | Delete the old pod first, or switch to `Recreate` strategy |
+| `FailedPostStartHook` | Sidecar postStart took longer than `terminationGracePeriodSeconds` | Pull fewer models, or use a post-deploy Job instead |
+
+### Model Won't Load — "requires more system memory"
+
+Ollama reports available memory *inside* its cgroup, not the full node. If you see:
+
+```
+{"error":"model requires more system memory (6.3 GiB) than is available (3.4 GiB)"}
+```
+
+The container's **memory limit** is too low. Check current limits:
+
+```bash
+kubectl get pod -n ollama -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{range .spec.containers[*]}  {.name}: cpu={.resources.limits.cpu} mem={.resources.limits.memory}{"\n"}{end}{end}'
+```
+
+Also reduce `OLLAMA_NUM_PARALLEL` — each parallel slot reserves memory. For an 8B model on CPU nodes, use:
+
+```yaml
+resources:
+  requests:
+    cpu: "2"
+    memory: 4Gi
+  limits:
+    cpu: "4"
+    memory: 12Gi
+env:
+  - name: OLLAMA_NUM_PARALLEL
+    value: "1"
+```
+
+### Port-Forward Issues
+
+Check the service exists and has endpoints:
+
+```bash
+kubectl get svc -n ollama
+kubectl get endpoints ollama -n ollama
+```
+
+If endpoints are empty, the pod isn't ready or the selector labels don't match.
+
+Verify port-forward is running and bound to the right port:
+
+```bash
+kubectl port-forward svc/ollama 8000:11434 -n ollama
+```
+
+If the port is already in use:
+
+```bash
+# Check what's holding the port
+netstat -ano | findstr :8000
+
+# Or use a different local port
+kubectl port-forward svc/ollama 9000:11434 -n ollama
+```
+
+### Networking — Checking Connectivity from Inside the Cluster
+
+Spin up a temporary debug pod to test connectivity to the Ollama service:
+
+```bash
+kubectl run -it --rm debug --image=curlimages/curl -n ollama -- sh
+```
+
+From inside the debug pod:
+
+```bash
+# Hit the Ollama service by its DNS name
+curl http://ollama.ollama.svc.cluster.local:11434
+
+# Pull a model
+curl http://ollama.ollama.svc.cluster.local:11434/api/tags
+
+# Test a query
+curl http://ollama.ollama.svc.cluster.local:11434/api/generate -d '{
+    "model": "llama3.1:8b",
+    "prompt": "hello",
+    "stream": false
+}'
+```
+
+If DNS doesn't resolve, check CoreDNS is running:
+
+```bash
+kubectl get pods -n kube-system -l k8s-app=kube-dns
+```
+
+### Node Resource Pressure
+
+Check actual resource usage across nodes:
+
+```bash
+kubectl top nodes
+kubectl top pods -n ollama
+```
+
+Check what's allocated vs. what's available on the node running the Ollama pod:
+
+```bash
+kubectl describe node <node-name> | Select-String -Pattern "Allocated resources" -Context 0,12
+```
+
+### PVC / Storage Issues
+
+Check PVC status and binding:
+
+```bash
+kubectl get pvc -n ollama
+kubectl describe pvc ollama-data -n ollama
+```
+
+| PVC Status | Meaning | Fix |
+|---|---|---|
+| `Bound` | Healthy — PV is attached | — |
+| `Pending` | No PV available or access mode mismatch | Check `storageClassName` exists and access mode matches |
+| `Lost` | PV was deleted while PVC still references it | Delete and recreate the PVC |
