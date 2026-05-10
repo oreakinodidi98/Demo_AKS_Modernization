@@ -61,6 +61,14 @@ Deploy LLM models into an AKS cluster using KAITO, then chat with them.
 
 ---
 
+## KAITO Deployment
+
+- KAITO can be deployed in two ways on AKS
+- **AKS add-on**: This is the easiest way to deploy KAITO on AKS however you will be limited in terms of getting the latest features and updates as soon as they are available upstream.
+- **Open source**: This requires more steps to deploy but you will have access to the latest features and updates as soon as they are available. To deploy open-source KAITO on AKS, you can deploy with **Terraform** or deploy with **Helm** and Azure CLI.
+
+---
+
 ## CLI Commands
 
 ### Set Variables
@@ -782,3 +790,5 @@ Things we ran into during this deployment that are worth knowing:
 - **PowerShell + `curl.exe` + `jq` — use the `-s` flag.** When piping `curl.exe` output to `jq` in PowerShell, the progress meter corrupts the JSON output. Always add `-s` (silent mode) to suppress it.
 
 - **`/v1/responses` is a valid vLLM endpoint.** It uses a simpler input/output format compared to `/v1/chat/completions` and is useful for quick tests.
+
+-
