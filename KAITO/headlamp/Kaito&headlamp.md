@@ -466,5 +466,32 @@ Write-Output "Tenant ID: $env:TENANT_ID"
 6. Installing KAITO can take up to 15 minutes to complete
 7. Once the installation is complete, you will see a message indicating that KAITO has been installed successfully
 
-## Headlamp
+## Developing AI Application by Interacting with the KAITO Workspace Endpoint
+
+- After deploying the workspace, you can now start developing an AI application by interacting with the workspace endpoint
+- This can be done by either HTTP requests or using a library that supports the OpenAI API
+
+### Port Forward Workspace Service
+
+- Your AI app needs to connect to the KAITO workspace Service
+- This service is of type `ClusterIP` so runs as an internal service
+- Meaning not accessible from outside the cluster
+- But can access from local machine using port forwarding
+- Can use the `kubectl port-forward` command or the Headlamp application to port-forward the workspace service
+
+**To port forward in Headlamp:**
+
+1. Go to the **Network** tab
+2. Select the service for the workspace
+3. Click **Port Forward**
+4. A random port would be assigned to the service — this port will be used to connect to KAITO
+
+---
+
+## Monitoring
+
+- Workspaces are served using the vLLM runtime
+- Allows us to monitor the performance of the KAITO workspace using the metrics emitted by the vLLM server
+- The metrics are emitted in the Prometheus format
+- To view metrics that are emitted, go to the **/metrics** endpoint of the workspace service
 
