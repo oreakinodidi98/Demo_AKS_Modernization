@@ -79,7 +79,7 @@
 - After deployed check Kaito workspace to see progress . Make sure the Resource Ready, Inference Ready, and Workspace Ready statuses are all set to ready
 - deployment can take up to 15 minutes
 
-### Test Worspace
+### Test Workspace
 
 - can click on the chat menu in headlamp when workspaces is ready , this will allow you to test the infrence endpoint
 - Select the workspace and model and begging testing , this also allows you to view workspace logs which is usefull for debugging and troubleshooting issues with he workspace
